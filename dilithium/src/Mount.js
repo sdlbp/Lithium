@@ -40,7 +40,7 @@ function mount(element, node) {
   // Create the internal instance. We're assuming for now that we only have
   // `Component`s being rendered at the root.
   let component = instantiateComponent(element);
-
+  console.log(component)
   instancesByRootID[rootID] = component;
 
   // This will return a DOM node. React does more work here to determine if we're remounting

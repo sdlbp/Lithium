@@ -34,6 +34,13 @@ class DOMComponentWrapper extends MultiChild {
     // React needs to do some special handling for some node types, specifically
     // removing event handlers that had to be attached to this node and couldn't
     // be handled through propagation.
+    Object.keys(this._currentElement.props).forEach(prop => {
+      if (/on-([a-z]+)/.test(prop)) {
+        const eventName = prop.match(/on-([a-z]+)/)[1]
+        console.log("remove event handler")
+        this._domNode.removeEventListener(eventName, this._currentElement.props[prop])
+      }
+    })
     this.unmountChildren();
   }
 
@@ -101,7 +108,11 @@ class DOMComponentWrapper extends MultiChild {
         Object.keys(prevProps[prop]).forEach(style => {
           styleUpdates[style] = '';
         });
-      } else {
+      } else if (/on-([a-z]+)/.test(prop)){
+        const eventName = prop.match(/on-([a-z]+)/)[1]
+        this._domNode.removeEventListener(eventName, prevProps[prop])
+        console.log("event handler removed")     
+      }else {
         // Handle propery removals. In React we currently have a white list of known
         // properties, which allows us to special case some things like "checked".
         // We'll just remove blindly.
@@ -118,7 +129,7 @@ class DOMComponentWrapper extends MultiChild {
       if (Object.is(prevValue, nextValue)) {
         return;
       }
-
+      
       if (prop === 'style') {
         // Update carefully. We need to remove old styles and add new ones
         if (prevValue) {
@@ -136,11 +147,17 @@ class DOMComponentWrapper extends MultiChild {
           // If there was no previous style, we can just treat the new style as the update.
           styleUpdates = nextValue;
         }
+      } else if (/on-([a-z]+)/.test(prop)){
+        const eventName = prop.match(/on-([a-z]+)/)[1]
+        if (prevValue) {
+          this._domNode.removeEventListener(eventName, prevValue)
+        }
+        this._domNode.addEventListener(eventName, nextValue)        
       } else {
         // DOM updates
         DOM.setProperty(this._domNode, prop, nextValue);
       }
-
+      
       DOM.updateStyles(this._domNode, styleUpdates);
     });
   }

@@ -5,41 +5,36 @@ const Dilithium = require('../dilithium');
 class CounterButton extends Dilithium.Component {
   constructor(props) {
     super(props);
-    this.state = {count: 0};
-    setInterval(() => {
-      this.setState({count: this.state.count + 1});
-    });
+    this.state = {
+      count: 0,
+      show: true
+    };
   }
-
+  clickHandler(){
+    let count = this.state.count
+    this.setState({show:false});
+  }
   render() {
     return (
       <div>
         <h1>{this.props.title}</h1>
-        <ColorSwatch number={this.state.count} />
-        <div>Count: <span>{this.state.count}</span></div>
+        {this.state.show ? 
+          <div on-click={this.clickHandler.bind(this)}>
+            <span>Count:</span>
+            <span>{this.state.count}</span>
+          </div>
+          :
+          <div>
+            <span>FDF </span>
+          </div>
+        }
+        
       </div>
     );
   }
 }
 
-class ColorSwatch extends Dilithium.Component {
-  render() {
-    const red = this.props.number % 256;
-    return (
-      <div
-        style={{
-          backgroundColor: `rgb(${red}, 0, 0)`,
-          height: '50px',
-          width: '50px',
-        }}
-      />
-    );
-  }
-}
-
-window.addEventListener('click', () => {
-  Dilithium.render(
+Dilithium.render(
     <CounterButton title="Hello React Rally!" />,
     document.getElementById('container'),
   );
-});

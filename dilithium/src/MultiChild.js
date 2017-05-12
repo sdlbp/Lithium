@@ -118,7 +118,6 @@ class MultiChild {
     let removedNodes = {};
 
     let nextRenderedChildren = flattenChildren(nextChildren);
-
     ChildReconciler.updateChildren(
       prevRenderedChildren,
       nextRenderedChildren,

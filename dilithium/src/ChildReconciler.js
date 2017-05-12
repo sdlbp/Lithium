@@ -75,7 +75,7 @@ function updateChildren(
   Object.keys(prevChildren).forEach(childKey => {
     // debugger;
     if (!nextChildren.hasOwnProperty(childKey)) {
-      prevChild = prevChildren[childKey];
+      let prevChild = prevChildren[childKey];
       removedChildren[childKey] = prevChild._domNode;
       Reconciler.unmountComponent(prevChild);
     }
